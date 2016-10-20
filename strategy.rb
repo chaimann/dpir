@@ -1,15 +1,43 @@
 # Strategy pattern is used for implementing each version of algorythm as a separate object
+require 'active_support/inflector'
+class CV
+  attr_accessor :subject, :skills, :generator
 
-class Report
-  attr_accessor :title, :body, :formatter
-
-  def initialize(formatter = nil)
-    @title = "Report"
-    @body = ['first line of the report', 'second line of the report', 'third line']
-    @formatter = formatter.to_s.classify.new if formatter
+  def initialize(subject, options)
+    options[:skills]    ||= []
+    options[:generator] ||= :pdf
+    @subject = subject
+    @skills = options[:skills]
+    @generator = "#{options[:generator]}_generator".to_s.classify.constantize.new
   end
 
-  def output
-    @strategy.output
+  def generate
+    @generator.generate(self)
   end
 end
+
+class PdfGenerator
+  def generate(context)
+    puts '--------- PDF ----------'
+    puts context.subject
+    context.skills.each_with_index do |skill, i|
+      puts "Skill ##{i}: #{skill}"
+    end
+    nil
+  end
+end
+
+class DocGenerator
+  def generate(context)
+    puts '--------- DOC ----------'
+    puts context.subject
+    context.skills.each_with_index do |skill, i|
+      puts "* Skill ##{i}: #{skill}"
+    end
+    nil
+  end
+end
+
+cv = CV.new('Jon Snow', skills: ['javascript', 'archery', 'swords'])
+cv.generator = DocGenerator.new
+puts cv.generate
