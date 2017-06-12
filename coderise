@@ -1,0 +1,3 @@
+env.SLACK_INTEGRATION_TOKEN="fdsknm423nlk2" 
+env.SLACK_TEAM_DOMAIN="yourdomain" 
+env.SLACK_TEAM_CHANNEL="#group"
